@@ -39,7 +39,9 @@ class SettingsTableViewController: UITableViewController {
         
         
         clientManager.connect(host: host, port: port!, username: username, password: password)
+        view.endEditing(true)
     }
+    
     // MARK: - Table view data source
 
     /*

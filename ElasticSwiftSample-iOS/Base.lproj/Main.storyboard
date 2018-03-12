@@ -12,8 +12,6 @@
         <!--Settings-->
         <scene sceneID="tHL-lk-trL">
             <objects>
-                <exit id="Nuz-4w-UNV" userLabel="Exit" sceneMemberID="exit"/>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="WoB-ZX-exb" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <tableViewController id="jJf-Ua-oJk" customClass="SettingsTableViewController" customModule="ElasticSwiftSample_iOS" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="grouped" separatorStyle="default" allowsSelection="NO" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" id="BjF-DH-jOc">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
@@ -203,8 +201,10 @@
                         <outlet property="usernameTextField" destination="IDV-Q3-heG" id="aEi-Ej-ZbS"/>
                     </connections>
                 </tableViewController>
+                <exit id="Nuz-4w-UNV" userLabel="Exit" sceneMemberID="exit"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="WoB-ZX-exb" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1580" y="273.01349325337333"/>
+            <point key="canvasLocation" x="1580" y="273"/>
         </scene>
         <!--Search-->
         <scene sceneID="jcw-q8-5fl">
