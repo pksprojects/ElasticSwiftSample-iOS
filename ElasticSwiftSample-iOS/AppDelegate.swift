@@ -91,3 +91,4 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 }
 
+let clientManager = ClientManager()

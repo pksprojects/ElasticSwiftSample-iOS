@@ -1,0 +1,12 @@
+PODS:
+  - ElasticSwift (1.0.0-alpha.4)
+
+DEPENDENCIES:
+  - ElasticSwift (= 1.0.0-alpha.4)
+
+SPEC CHECKSUMS:
+  ElasticSwift: 0747befea8fe3b539a3519e86c3244f2c481e2de
+
+PODFILE CHECKSUM: 5636faab2c263c272461b7c361086efa4291a595
+
+COCOAPODS: 1.4.0
