@@ -1,6 +1,0 @@
-framework module Pods_ElasticSwiftSample_iOSUITests {
-  umbrella header "Pods-ElasticSwiftSample-iOSUITests-umbrella.h"
-
-  export *
-  module * { export * }
-}
