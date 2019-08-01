@@ -8,11 +8,13 @@
 
 import UIKit
 import NotificationCenter
+import ElasticSwiftCore
 import ElasticSwift
+import ElasticSwiftQueryDSL
 
 class SearchViewController: UITableViewController, UISearchResultsUpdating {
     
-    var client: RestClient?
+    var client: ElasticClient?
     var selectedRow: Int?
     
     var results = [SearchHit<Shakespeare>]()
@@ -72,7 +74,7 @@ class SearchViewController: UITableViewController, UISearchResultsUpdating {
         }
         
         // Configure the cell...
-        cell.textLabel?.text = results[indexPath.row].source?.text_entry
+        cell.textLabel?.text = results[indexPath.row].source?.textEntry
         cell.shakespeare = results[indexPath.row].source
         return cell
     }
@@ -82,14 +84,13 @@ class SearchViewController: UITableViewController, UISearchResultsUpdating {
         self.performSegue(withIdentifier: "toDetailView", sender: nil)
     }
     
-    func handler(_ response: SearchResponse<Shakespeare>?, _ error: Error?) {
-        if let error = error {
-            print("Error:", error)
-        }
+    func handler(_ response: Result<SearchResponse<Shakespeare>, Error>) {
         
-        if let response = response {
-            print("Response:", response)
-            self.results = (response.hits?.hits)!
+        switch response {
+        case .failure(let error):
+            print("Error:", error)
+        case .success(let searchResponse):
+            self.results = searchResponse.hits.hits
             DispatchQueue.main.sync {
                 self.tableView.reloadData()
             }
@@ -134,20 +135,23 @@ class SearchViewController: UITableViewController, UISearchResultsUpdating {
     }
 
     func doSearch(value: String) {
-        let matchQuery = QueryBuilders.matchQuery().match(field: "text_entry", value: value).query
+        let matchQuery = QueryBuilders.matchQuery()
+            .set(field: "text_entry")
+            .set(value: value)
+            .query
         
         do {
-            var requestBuilder = client?.makeSearch()
-                .set(indices: "shakespeare")
-                .set(completionHandler: self.handler)
-                .set(size: 1000)
             
-            if !value.isEmpty {
-                requestBuilder = requestBuilder?.set(query: matchQuery)
-            }
+            let searchRequest = try SearchRequestBuilder { builder in
+                builder.set(indices: "shakespeare")
+                    .set(size: 1000)
+                if !value.isEmpty {
+                    builder.set(query: matchQuery)
+                }
+            } .build()
             
-            let request = try requestBuilder?.build()
-            request?.execute()
+            self.client?.search(searchRequest, completionHandler: self.handler)
+            
         } catch {
             print(error)
         }
@@ -155,17 +159,26 @@ class SearchViewController: UITableViewController, UISearchResultsUpdating {
     
 }
 
-class Shakespeare: Codable {
-    var play_name: String?
-    var type: String?
-    var line_id: Int?
+struct Shakespeare: Codable {
+    var playName: String
+    var type: String
+    var lineId: Int
     //var speech_number: Int?
-    var line_number: String?
-    var speaker: String?
-    var text_entry: String?
+    var lineNo: String
+    var speaker: String
+    var textEntry: String
     
     func propertyNames() -> [Mirror.Child] {
-        return Mirror(reflecting: self).children.flatMap{ $0 }
+        return Mirror(reflecting: self).children.compactMap{ $0 }
+    }
+    
+    enum CodingKeys: String, CodingKey {
+        case playName = "play_name"
+        case type
+        case lineId = "line_id"
+        case lineNo = "line_number"
+        case speaker
+        case textEntry = "text_entry"
     }
 }
 

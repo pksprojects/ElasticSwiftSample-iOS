@@ -230,7 +230,6 @@
 				064F3F1D204E43A7008309F3 /* Frameworks */,
 				064F3F1E204E43A7008309F3 /* Resources */,
 				C4AF76B7EB368CDCFCA5B073 /* [CP] Embed Pods Frameworks */,
-				52DF877CB1215D6C97060488 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -249,8 +248,6 @@
 				064F3F33204E43A7008309F3 /* Sources */,
 				064F3F34204E43A7008309F3 /* Frameworks */,
 				064F3F35204E43A7008309F3 /* Resources */,
-				496E31934358EE315586030E /* [CP] Embed Pods Frameworks */,
-				9DEA7B4E6A4CC65267AFAA90 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -270,8 +267,6 @@
 				064F3F3E204E43A7008309F3 /* Sources */,
 				064F3F3F204E43A7008309F3 /* Frameworks */,
 				064F3F40204E43A7008309F3 /* Resources */,
-				980F826619594C4E436943EC /* [CP] Embed Pods Frameworks */,
-				5C59FAB5DD22547411151669 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -290,11 +285,12 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0920;
-				LastUpgradeCheck = 0920;
+				LastUpgradeCheck = 1100;
 				ORGANIZATIONNAME = pksprojects;
 				TargetAttributes = {
 					064F3F1F204E43A7008309F3 = {
 						CreatedOnToolsVersion = 9.2;
+						LastSwiftMigration = 1100;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.NetworkExtensions.iOS = {
@@ -304,11 +300,13 @@
 					};
 					064F3F36204E43A7008309F3 = {
 						CreatedOnToolsVersion = 9.2;
+						LastSwiftMigration = 1100;
 						ProvisioningStyle = Automatic;
 						TestTargetID = 064F3F1F204E43A7008309F3;
 					};
 					064F3F41204E43A7008309F3 = {
 						CreatedOnToolsVersion = 9.2;
+						LastSwiftMigration = 1100;
 						ProvisioningStyle = Automatic;
 						TestTargetID = 064F3F1F204E43A7008309F3;
 					};
@@ -364,51 +362,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		496E31934358EE315586030E /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-ElasticSwiftSample-iOSTests/Pods-ElasticSwiftSample-iOSTests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		52DF877CB1215D6C97060488 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-ElasticSwiftSample-iOS/Pods-ElasticSwiftSample-iOS-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		5C59FAB5DD22547411151669 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-ElasticSwiftSample-iOSUITests/Pods-ElasticSwiftSample-iOSUITests-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		8E02BFDC391C3DC6C197C1FD /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -425,36 +378,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		980F826619594C4E436943EC /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-ElasticSwiftSample-iOSUITests/Pods-ElasticSwiftSample-iOSUITests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		9DEA7B4E6A4CC65267AFAA90 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-ElasticSwiftSample-iOSTests/Pods-ElasticSwiftSample-iOSTests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		A457A8ABA4F41BA7639102AB /* [CP] Check Pods Manifest.lock */ = {
@@ -481,16 +404,48 @@
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-ElasticSwiftSample-iOS/Pods-ElasticSwiftSample-iOS-frameworks.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-ElasticSwiftSample-iOS/Pods-ElasticSwiftSample-iOS-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/CNIOAtomics/CNIOAtomics.framework",
+				"${BUILT_PRODUCTS_DIR}/CNIODarwin/CNIODarwin.framework",
+				"${BUILT_PRODUCTS_DIR}/CNIOHTTPParser/CNIOHTTPParser.framework",
+				"${BUILT_PRODUCTS_DIR}/CNIOLinux/CNIOLinux.framework",
+				"${BUILT_PRODUCTS_DIR}/CNIOSHA1/CNIOSHA1.framework",
 				"${BUILT_PRODUCTS_DIR}/ElasticSwift/ElasticSwift.framework",
+				"${BUILT_PRODUCTS_DIR}/ElasticSwiftCodableUtils/ElasticSwiftCodableUtils.framework",
+				"${BUILT_PRODUCTS_DIR}/ElasticSwiftCore/ElasticSwiftCore.framework",
+				"${BUILT_PRODUCTS_DIR}/ElasticSwiftNetworking/ElasticSwiftNetworking.framework",
+				"${BUILT_PRODUCTS_DIR}/ElasticSwiftQueryDSL/ElasticSwiftQueryDSL.framework",
+				"${BUILT_PRODUCTS_DIR}/Logging/Logging.framework",
+				"${BUILT_PRODUCTS_DIR}/SwiftNIO/NIO.framework",
+				"${BUILT_PRODUCTS_DIR}/SwiftNIOConcurrencyHelpers/NIOConcurrencyHelpers.framework",
+				"${BUILT_PRODUCTS_DIR}/SwiftNIOFoundationCompat/NIOFoundationCompat.framework",
+				"${BUILT_PRODUCTS_DIR}/SwiftNIOHTTP1/NIOHTTP1.framework",
+				"${BUILT_PRODUCTS_DIR}/SwiftNIOTLS/NIOTLS.framework",
+				"${BUILT_PRODUCTS_DIR}/SwiftNIOTransportServices/NIOTransportServices.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CNIOAtomics.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CNIODarwin.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CNIOHTTPParser.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CNIOLinux.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CNIOSHA1.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ElasticSwift.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ElasticSwiftCodableUtils.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ElasticSwiftCore.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ElasticSwiftNetworking.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ElasticSwiftQueryDSL.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Logging.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/NIO.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/NIOConcurrencyHelpers.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/NIOFoundationCompat.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/NIOHTTP1.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/NIOTLS.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/NIOTransportServices.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-ElasticSwiftSample-iOS/Pods-ElasticSwiftSample-iOS-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ElasticSwiftSample-iOS/Pods-ElasticSwiftSample-iOS-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		EF9843BABF180AF59885A558 /* [CP] Check Pods Manifest.lock */ = {
@@ -595,6 +550,7 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
@@ -602,6 +558,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
@@ -629,7 +586,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -652,6 +609,7 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
@@ -659,6 +617,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
@@ -680,7 +639,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
@@ -700,7 +659,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.pksprojects.ElasticSwiftSample-iOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -717,7 +676,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.pksprojects.ElasticSwiftSample-iOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -734,7 +693,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.pksprojects.ElasticSwiftSample-iOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ElasticSwiftSample-iOS.app/ElasticSwiftSample-iOS";
 			};
@@ -752,7 +711,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.pksprojects.ElasticSwiftSample-iOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ElasticSwiftSample-iOS.app/ElasticSwiftSample-iOS";
 			};
@@ -769,7 +728,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.pksprojects.ElasticSwiftSample-iOSUITests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = "ElasticSwiftSample-iOS";
 			};
@@ -786,7 +745,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.pksprojects.ElasticSwiftSample-iOSUITests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = "ElasticSwiftSample-iOS";
 			};

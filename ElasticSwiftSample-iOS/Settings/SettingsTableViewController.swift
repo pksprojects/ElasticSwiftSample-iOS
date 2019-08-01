@@ -9,7 +9,8 @@
 import UIKit
 
 class SettingsTableViewController: UITableViewController {
-
+    @IBOutlet weak var useHTTPS: UISwitch!
+    
     @IBOutlet weak var hostTextField: UITextField!
     @IBOutlet weak var portTextField: UITextField!
     @IBOutlet weak var usernameTextField: UITextField!
@@ -32,13 +33,14 @@ class SettingsTableViewController: UITableViewController {
 
     @IBAction func updateConnection(_ sender: UIButton) {
         
-        let host = (self.hostTextField.text?.isEmpty)! ? "192.168.1.100" : self.hostTextField.text!
+        let scheme = self.useHTTPS.isOn ? "https" : "http"
+        let host = (self.hostTextField.text?.isEmpty)! ? "192.168.1.142" : self.hostTextField.text!
         let port = (self.portTextField.text?.isEmpty)! ? 9200 : Int(self.portTextField.text!)
-        let username = (self.usernameTextField.text?.isEmpty)! ? "elastic" : self.usernameTextField.text!
-        let password = (self.passwordTextField.text?.isEmpty)! ? "elastic" : self.passwordTextField.text!
+        let username = self.usernameTextField.text
+        let password = self.passwordTextField.text
         
         
-        clientManager.connect(host: host, port: port!, username: username, password: password)
+        clientManager.connect(scheme: scheme, host: host, port: port!, username: username, password: password)
         view.endEditing(true)
     }
     

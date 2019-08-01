@@ -1,31 +1,17 @@
 # ElasticSwift
 
+[![Build Status](https://travis-ci.org/pksprojects/ElasticSwift.svg?branch=master)](https://travis-ci.org/pksprojects/ElasticSwift)
+[![codecov](https://codecov.io/gh/pksprojects/ElasticSwift/branch/master/graph/badge.svg)](https://codecov.io/gh/pksprojects/ElasticSwift)
+
 ## Project Status
 
-This project is very early in developement, more information will be made available as project progresses.
+This project is actively in developement, more information will be made available as project progresses.
 
-If you'd like to contribute contact me via <support@pksprojects.org>
-
-High level implementation Plan:
-
-* Initial version of Transport Layer (Connections & Connection pool).
-
-* Initial version of elasticsearch Request, Response & Exception Objects.
-
-* Adding support for elasticsearch API's not necessarily in oder:
-  * cat
-  * cluster
-  * indices
-  * ingest
-  * nodes
-  * snapshot
-  * task
-
-* Stabilizing package and API's
+If you'd like to contribute pull requests are welcome.
 
 * Platform support for macOS, iOS & linux.
 
-* Query DSL builders and helpers similar to elasticsearch Java client.
+* Query DSL builders and helpers similar to elasticsearch Java client. Check the table below to see full list of avaiable QueryBuilders
 
 ## Project Goal
 
@@ -43,7 +29,7 @@ High-performant means providing end user's response under 100ms not including th
 $ gem install cocoapods
 ```
 
-> CocoaPods 1.2.0+ is required to build ElasticSwift.
+> CocoaPods 1.6.0+ is required to build ElasticSwift.
 
 To integrate Elasticswift into your Xcode project using CocoaPods, specify it in your `Podfile`:
 
@@ -53,7 +39,11 @@ platform :ios, '10.0'
 use_frameworks!
 
 target '<Your Target Name>' do
-    pod 'ElasticSwift', '~> 1.0.0-alpha.2'
+    pod 'ElasticSwift', '~> 1.0.0-alpha.9'
+    pod 'ElasticSwiftCore', '~> 1.0.0-alpha.9'
+    pod 'ElasticSwiftQueryDSL', '~> 1.0.0-alpha.9'
+    pod 'ElasticSwiftCodableUtils', '~> 1.0.0-alpha.9'
+    pod 'ElasticSwiftNetworking', '~> 1.0.0-alpha.9'
 end
 ```
 
@@ -71,7 +61,7 @@ Once you have your Swift package set up, adding ElasticSwift as a dependency is 
 
 ```swift
 dependencies: [
-    .Package(url: "https://github.com/pksprojects/ElasticSwift.git", "1.0.0-alpha.2")
+    .package(url: "https://github.com/pksprojects/ElasticSwift.git", from: "1.0.0-alpha.9")
 ]
 ```
 
@@ -79,15 +69,15 @@ dependencies: [
 
 ### Client
 
-Creating `RestClient`.
+Creating `ElasticClient`.
 
 ```swift
 import ElasticSwift
 
 var settings = Settings.default // Creates default settings for client
-var client = RestClient(settings: settings) // Creates client with specified settings
+var client = ElasticClient(settings: settings) // Creates client with specified settings
 
-var client = RestClient() // Creates client with default settings
+var client = ElasticClient() // Creates client with default settings
 
 ```
 
@@ -96,20 +86,21 @@ Creating `Settings` for specified host.
 ```swift
 
 // with host address as string
-var settings = Settings(forHost: "http://samplehost:port")
+var settings = Settings.default(forHost: "http://samplehost:port")
 
 // with host address
 var host = Host(string: "http://samplehost:port")
-var settings = Settings(forHost: host)
+var settings = Settings(forHost: host, adaptorConfig: HTTPClientAdaptorConfiguration.default)
 
 ```
 
 ```swift
 
-let cred = ClientCredential(username: "elastic", password: "elastic")
+let cred = BasicClientCredential(username: "elastic", password: "elastic")
 let certPath = "/path/to/certificate.der"
 let sslConfig = SSLConfiguration(certPath: certPath, isSelf: true)
-let settings = Settings(forHosts: ["https://samplehost:port"], withCredentials: cred, withSSL: true, sslConfig: sslConfig)
+let adaptorConfig = URLSessionAdaptorConfiguration(sslConfig: sslConfig)
+let settings = Settings(forHosts: ["https://samplehost:port"], withCredentials: cred, adaptorConfig: adaptorConfig)
 let client = RestClient(settings: settings)
 
 ```
@@ -121,37 +112,31 @@ When creating default settings it creates settings for `http://localhost:9200`.
 Create and Delete Index
 
 ```swift
-func createHandler(_ response: CreateIndexResponse?, _ error: Error?) -> Void {
-    if let error = error {
-      print("Error", error)
-    }
-    if let response = response {
-        print("Response", response)
+func createHandler(_ result: Result<CreateIndexResponse, Error>) -> Void {
+    switch result {
+        case .failure(let error):
+            print("Error", error)
+        case .success(let response):
+            print("Response", response)
     }
 }
 
 // creating index
-let createRequest = self.client?.admin.indices().create()
-            .set(name: "indexName")
-            .set(completionHandler: createHandler)
-            .build()
-createRequest?.execute() // executes request
+let createIndexRequest = CreateIndexRequest(name: "indexName")
+client.indices.create(createIndexRequest, completionHandler: createHandler) // executes request
 
 // delete index
 func deleteHandler(_ response: DeleteIndexResponse?, _ error: Error?) -> Void {
-    if let error = error {
-        print("Error", error)
-    }
-    if let response = response {
-        print("Response", response)
+    switch result {
+        case .failure(let error):
+            print("Error", error)
+        case .success(let response):
+            print("Response", response)
     }
 }
 
-let deleteRequest = try self.client?.admin.indices().delete()
-    .set(name: "indexName")
-    .set(completionHandler: deleteHandler)
-    .build()
-deleteRequest?.execute() // executes request
+let deleteIndexRequest = DeleteIndexRequest(name: "indexName")
+client.indices.delete(deleteIndexRequest, completionHandler: deleteHandler) // executes request
 
 ```
 
@@ -165,71 +150,70 @@ class MyClass: Codable {
 }
 
 // index document
-func indexHandler(_ response: IndexResponse?, _ error:  Error?) -> Void {
-    if let error = error {
-        print(error)
-    }
-    if let response = response {
-        print("Response", response)
+func indexHandler(_ result: Result<IndexResponse, Error>) -> Void {
+    switch result {
+        case .failure(let error):
+            print("Error", error)
+        case .success(let response):
+            print("Response", response)
     }
 }
 
 let mySource = MyClass()
 mySource.myField = "My value"
 
-let indexRequest = try self.client?.makeIndex()
-    .set(index: "indexName")
-    .set(type: "type")
-    .set(id: "id")
-    .set(source: mySource)
-    .set(completionHandler: indexHandler)
-    .build()
+let indexRequest = try IndexRequestBuilder<MyClass>() { builder in
+            _ = builder.set(index: "indexName")
+                .set(type: "type")
+                .set(id: "id")
+                .set(source: mySource)
+        }
+        .build()
 
-indexRequest?.execute()
+client.index(indexRequest, completionHandler: indexHandler)
 
 // get document
-func getHandler(_ response: GetResponse<MyClass>?, _ error: Error?) -> Void {
-    if let error = error {
-        print(error)
-    }
-    if let response = response {
-        print("Response", response)
+func getHandler(_ result: Result<GetResponse<MyClass>, Error>) -> Void {
+    switch result {
+        case .failure(let error):
+            print("Error", error)
+        case .success(let response):
+            print("Response", response)
     }
 }
 
-let getRequest = self.client?.makeGet()
-    .set(index: "indexName")
-    .set(type: "type")
-    .set(id: "id")
-    .set(completionHandler: getHandler)
-    .build()
+let getRequest = GetRequestBuilder<MyClass>() { builder in
+            builder.set(id: "id")
+                .set(index: "indexName")
+                .set(type: "type")
+        }
+        .build()
 
-getRequest?.execute()
+client.get(getRequest, completionHandler: getHandler)
 
 // delete document
-func deleteHandler(_ response: DeleteResponse?, _ error:  Error?) -> Void {
-    if let error = error {
-        print(error)
-    }
-    if let response = response {
-        print("Response", response)
+func deleteHandler(_ result: Result<DeleteResponse, Error>) -> Void {
+    switch result {
+        case .failure(let error):
+            print("Error", error)
+        case .success(let response):
+            print("Response", response)
     }
 }
 
-let deleteRequest = self.client?.makeDelete()
-    .set(index: "indexName")
-    .set(type: "type")
-    .set(id: "id")
-    .set(completionHandler: deleteHandler)
-    .build()
+let deleteRequest = try DeleteRequestBuilder() { builder in
+        builder.set(index: "indexName")
+                .set(type: "type")
+                .set(id: "id")
+    } .build()
 
-deleteRequest?.execute()
+client.delete(deleteRequest, completionHandler: deleteHandler)
 
 ```
 
 ### Query
 
-Currently only `bool`, `match`, `match_all` and `match_none` are available. Future releases will support more query types.
+Currently not all QueryBuilders are available. Future releases will add support for additional QueryBuilders. Check below for details
 
 ```swift
 
@@ -247,29 +231,77 @@ Creating simple search request.
 
 ```swift
 
-func handler(_ response: SearchResponse<MyClass>?, _ error: Error?) -> Void {
-    if let error = error {
-        print("Error", error)
-        return
+func handler(_ result: Result<SearchResponse<Message>, Error>) -> Void {
+    switch result {
+        case .failure(let error):
+            print("Error", error)
+        case .success(let response):
+            print("Response", response)
     }
-    print(response?.hits as Any)
 }
 
-let builder = QueryBuilders.boolQuery()
+let queryBuilder = QueryBuilders.boolQuery()
 let match = QueryBuilders.matchQuery().match(field: "myField", value: "MySearchValue")
-builder.must(query: match)
+queryBuilder.must(query: match)
 
-let sort =  SortBuilders.fieldSort("msg")
+let sort =  SortBuilders.fieldSort("msg") // use "msg.keyword" as field name in case of text field
     .set(order: .asc)
     .build()
 
-let request = try self.client?.makeSearch()
-    .set(indices: "indexName")
-    .set(types: "type")
-    .set(query: builder.query)
-    .set(sort: sort)
-    .set(completionHandler: handler)
-    .build()
-request?.execute()
+let request = try SearchRequestBuilder() { builder in
+            builder.set(indices: "indexName")
+                .set(types: "type")
+                .set(query: queryBuilder.query)
+                .set(sort: sort)
+        } .build()
+
+client.search(request, completionHandler: handler)
+
+```
+
+### QueryDSL 
+
+Below Table lists all the available search queries with their corresponding QueryBuilder class name and helper method name in the QueryBuilders utility class.
+
+| Search Query | QueryBuilder Class | Method in QueryBuilders |
+| :---         |     :---      |          :--- |
+| ConstantScoreQuery | ConstantScoreQueryBuilder | QueryBuilders.constantScoreQuery() |
+| BoolQuery | BoolQueryBuilder | QueryBuilders.boolQuery() |
+| DisMaxQuery | DisMaxQueryBuilder | QueryBuilders.disMaxQuery() |
+| FunctionScoreQuery | FunctionScoreQueryBuilder | QueryBuilders.functionScoreQuery() |
+| BoostingQuery | BoostingQueryBuilder | QueryBuilders.boostingeQuery() |
+| MatchQuery | MatchQueryBuilder | QueryBuilders.matchQuery() |
+| MatchPhraseQuery | MatchPhraseQueryBuilder | QueryBuilders.matchPhraseQuery() |
+| MatchPhrasePrefixQuery | MatchPhrasePrefixQueryBuilder | QueryBuilders.matchPhrasePrefixQuery() |
+| MultiMatchQuery | MultiMatchQueryBuilder | QueryBuilders.multiMatchQuery() |
+| CommonTermsQuery | CommonTermsQueryBuilder | QueryBuilders.commonTermsQuery() |
+| QueryStringQuery | QueryStringQueryBuilder | QueryBuilders.queryStringQuery() |
+| SimpleQueryStringQuery | SimpleQueryStringQueryBuilder | QueryBuilders.simpleQueryStringQuery() |
+| MatchAllQuery | MatchAllQueryBuilder | QueryBuilders.matchAllQuery() |
+| MatchNoneQuery | MatchNoneQueryBuilder | QueryBuilders.matchNoneQuery() |
+| TermQuery | TermQueryBuilder | QueryBuilders.termQuery() |
+| TermsQuery | TermsQueryBuilder | QueryBuilders.termsQuery() |
+| RangeQuery | RangeQueryBuilder | QueryBuilders.rangeQuery() |
+| ExistsQuery | ExistsQueryBuilder | QueryBuilders.existsQuery() |
+| PrefixQuery | PrefixQueryBuilder | QueryBuilders.prefixQuery() |
+| WildCardQuery | WildCardQueryBuilder | QueryBuilders.wildCardQuery() |
+| RegexpQuery | RegexpQueryBuilder | QueryBuilders.regexpQuery() |
+| FuzzyQuery | FuzzyQueryBuilder | QueryBuilders.fuzzyQuery() |
+| TypeQuery | TypeQueryBuilder | QueryBuilders.typeQuery() |
+| IdsQuery | IdsQueryBuilder | QueryBuilders.idsQuery() |
+
+#### Note 
+
+An overload for all the helper methods are available which that a closure to set builder properties.
+
+```swift
+
+public static func matchAllQuery() -> MatchAllQueryBuilder
+
+public static func matchAllQuery(_ closure: (MatchAllQueryBuilder) -> Void) -> MatchAllQueryBuilder
+
+let matchAll = QueryBuilders.matchAllQuery { builder in
+    builder.boost = 1.2
+}
 
 ```

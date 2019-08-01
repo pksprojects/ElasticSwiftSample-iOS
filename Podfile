@@ -6,7 +6,7 @@ target 'ElasticSwiftSample-iOS' do
   use_frameworks!
 
   # Pods for ElasticSwiftSample-iOS
-  pod 'ElasticSwift', '1.0.0-alpha.4'
+  pod 'ElasticSwift', '1.0.0-alpha.9'
 
   target 'ElasticSwiftSample-iOSTests' do
     inherit! :search_paths

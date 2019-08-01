@@ -7,25 +7,35 @@
 //
 
 import Foundation
+import ElasticSwiftCore
 
-class Serializers {
+//MARK:- DefaultSerializer
+
+public class DefaultSerializer: Serializer {
     
-    static let encoder = JSONEncoder()
-    static let decoder = JSONDecoder()
+    public let encoder: JSONEncoder
+    public let decoder: JSONDecoder
     
-    public static func decode<T: Codable>(data: Data) throws -> T? {
+    public init(encoder: JSONEncoder = JSONEncoder(), decoder: JSONDecoder = JSONDecoder()) {
+        self.encoder = encoder
+        self.decoder = decoder
+    }
+    
+    public func decode<T>(data: Data) -> Result<T, DecodingError> where T: Decodable {
         do {
-            return try decoder.decode(T.self, from: data)
+            let decoded = try decoder.decode(T.self, from: data)
+            return .success(decoded)
         } catch {
-            throw error
+            return .failure(DecodingError(T.self, data: data, error: error))
         }
     }
     
-    public static func encode<T: Codable>(_ value: T) throws -> Data? {
+    public func encode<T>(_ value: T) -> Result<Data, EncodingError> where T: Encodable {
         do {
-            return try encoder.encode(value)
+            let encoded = try encoder.encode(value)
+            return .success(encoded)
         } catch {
-            throw error
+            return .failure(EncodingError(value: value, error: error))
         }
     }
 }

@@ -7,67 +7,107 @@
 //
 
 import Foundation
+import NIOHTTP1
+import ElasticSwiftCore
+
+//MARK:- Delete Request Builder
 
 public class DeleteRequestBuilder: RequestBuilder {
     
-    let client: ESClient
+    public typealias BuilderClosure = (DeleteRequestBuilder) -> Void
+    public typealias RequestType = DeleteRequest
+    
     var index: String?
     var type: String?
     var id: String?
-    var version: Int?
-    var completionHandler: ((DeleteResponse?, Error?) -> Void)?
+    var version: String?
+    var versionType: VersionType?
+    var refresh: IndexRefresh?
     
-    init(withClient client: ESClient) {
-        self.client = client
+    init() {}
+    
+    public init(builderClosure: BuilderClosure) {
+        builderClosure(self)
     }
     
+    @discardableResult
     public func set(index: String) -> Self {
         self.index = index
         return self
     }
     
+    @discardableResult
+    @available(*, deprecated, message: "Elasticsearch has deprecated use of custom types and will be remove in 7.0")
     public func set(type: String) -> Self {
         self.type = type
         return self
     }
     
+    @discardableResult
     public func set(id: String) -> Self {
         self.id = id
         return self
     }
     
-    public func set(version: Int) -> Self {
+    @discardableResult
+    public func set(version: String) -> Self {
         self.version = version
         return self
     }
     
-    public func set(completionHandler: @escaping (DeleteResponse?, Error?) -> Void) -> Self {
-        self.completionHandler = completionHandler
+    @discardableResult
+    public func set(versionType: VersionType) -> Self {
+        self.versionType = versionType
         return self
     }
     
-    public func build() -> Request {
-        return DeleteRequest(withBuilder: self)
+    @discardableResult
+    public func set(refresh: IndexRefresh) -> Self {
+        self.refresh = refresh
+        return self
+    }
+    
+    public func build() throws -> RequestType {
+        
+        guard self.index != nil else {
+            throw RequestBuilderError.missingRequiredField("index")
+        }
+        
+        guard self.id != nil else {
+            throw RequestBuilderError.missingRequiredField("id")
+        }
+        
+        return try DeleteRequest(withBuilder: self)
     }
     
 }
 
+//MARK:- Delete Request
+
 public class DeleteRequest: Request {
     
-    let client: ESClient
-    let index: String
-    let type: String
-    let id: String
-    var version: Int?
-    var completionHandler: ((DeleteResponse?, Error?) -> Void)
+    public var headers: HTTPHeaders = HTTPHeaders()
     
-    init(withBuilder builder: DeleteRequestBuilder) {
-        self.client = builder.client
+    public let index: String
+    public let type: String
+    public let id: String
+    public var version: String?
+    public var versionType: VersionType?
+    public var refresh: IndexRefresh?
+    
+    public init(index: String, type: String = "_doc", id: String) {
+        self.index = index
+        self.type = type
+        self.id = id
+    }
+    
+    init(withBuilder builder: DeleteRequestBuilder) throws {
         self.index = builder.index!
-        self.type = builder.type!
+        self.type = builder.type ?? "_doc"
         self.id = builder.id!
         self.version = builder.version
-        self.completionHandler = builder.completionHandler!
+        self.versionType = builder.versionType
+        self.refresh = builder.refresh
     }
     
     public var method: HTTPMethod {
@@ -78,76 +118,26 @@ public class DeleteRequest: Request {
     
     public var endPoint: String {
         get {
-            return makeEndPoint()
+            return self.index + "/" + self.type + "/" + self.id
         }
     }
     
-    public var body: Data {
+    public var queryParams: [URLQueryItem] {
         get {
-            return Data()
-        }
-    }
-    
-    public func execute() {
-        self.client.execute(request: self, completionHandler: responseHandler)
-    }
-    
-    func makeEndPoint() -> String {
-        return self.index + "/" + self.type + "/" + self.id
-    }
-    
-    func responseHandler(_ response: ESResponse) -> Void {
-        if let error = response.error {
-            return completionHandler(nil, error)
-        }
-        do {
-            print(String(data: response.data!, encoding: .utf8)!)
-            let decoded: DeleteResponse? = try Serializers.decode(data: response.data!)
-            if decoded?.id != nil {
-                return completionHandler(decoded, nil)
-            } else {
-                let decodedError: ElasticsearchError? = try Serializers.decode(data: response.data!)
-                if let decoded = decodedError {
-                    return completionHandler(nil, decoded)
-                }
+            var params = [URLQueryItem]()
+            if let version = self.version, let versionType = self.versionType {
+                params.append(URLQueryItem(name: QueryParams.version.rawValue, value: version))
+                params.append(URLQueryItem(name: QueryParams.versionType.rawValue, value: versionType.rawValue))
             }
-        } catch {
-            do {
-                let decodedError: ElasticsearchError? = try Serializers.decode(data: response.data!)
-                if let decoded = decodedError {
-                    return completionHandler(nil, decoded)
-                }
-            } catch {
-                return completionHandler(nil, error)
+            if let refresh = self.refresh {
+                params.append(URLQueryItem(name: QueryParams.refresh.rawValue, value: refresh.rawValue))
             }
+            return params
         }
     }
     
-}
-
-public class DeleteResponse: Codable {
-    
-    public var shards: Shards?
-    public var index: String?
-    public var type: String?
-    public var id: String?
-    public var version: Int?
-    public var seqNumber: Int?
-    public var primaryTerm: Int?
-    public var result: String?
-    
-    init() {
-        
+    public func makeBody(_ serializer: Serializer) -> Result<Data, MakeBodyError> {
+        return .failure(.noBodyForRequest)
     }
     
-    enum CodingKeys: String, CodingKey {
-        case shards = "_shards"
-        case index = "_index"
-        case type = "_type"
-        case id = "_id"
-        case version = "_version"
-        case seqNumber = "_seq_no"
-        case primaryTerm = "_primary_term"
-        case result
-    }
 }

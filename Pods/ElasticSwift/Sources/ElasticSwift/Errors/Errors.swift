@@ -7,16 +7,19 @@
 //
 
 import Foundation
+import ElasticSwiftCore
 
-public class ElasticsearchError: Error, Codable {
+//MARK:- ERRORS
+
+//MARK:- Elasticsearch Default Error
+
+public struct ElasticsearchError: Error, Codable {
     
-    var error: ElasticError?
-    var status: Int?
-    
-    init() {}
+    var error: ElasticError
+    var status: Int
 }
 
-public class ElasticError: Codable {
+public struct ElasticError: Codable {
     
     var type: String?
     var index: String?
@@ -24,8 +27,6 @@ public class ElasticError: Codable {
     var reason: String?
     var indexUUID: String?
     var rootCause: [ElasticError]?
-    
-    init() {}
     
     enum CodingKeys: String, CodingKey {
         case rootCause = "root_cause"
@@ -38,9 +39,68 @@ public class ElasticError: Codable {
 }
 
 
+public class UnsupportedResponseError: Error {
+    
+    let response: HTTPResponse
+    let msg: String
+    
+    public init(msg: String = "UnsupportedResponseError", response: HTTPResponse) {
+        self.response = response
+        self.msg = msg
+    }
+    
+    public var localizedDescription: String {
+        get {
+            return "\(msg): \(response)"
+        }
+    }
+    
+}
+
+public class RequestConverterError<T: Request>: Error {
+    
+    public let error: Error
+    public let message: String
+    public let request: T
+    
+    public init(message: String, error: Error, request: T) {
+        self.error = error
+        self.message = message
+        self.request = request
+    }
+    
+}
+
+public class ResponseConverterError: Error, CustomStringConvertible, CustomDebugStringConvertible {
+    
+    public let error: Error
+    public let message: String
+    public let response: HTTPResponse
+    
+    public init(message: String, error: Error, response: HTTPResponse) {
+        self.error = error
+        self.message = message
+        self.response = response
+    }
+    
+    public var description: String {
+        get {
+            return "ResponseConverterError: \(message) Response: \(String(describing: response)) with Error: \(String(describing: error))"
+        }
+    }
+    
+    public var debugDescription: String {
+        get {
+            return "ResponseConverterError: \(message) Response: \(String(reflecting: response)) with Error: \(String(reflecting: error))"
+        }
+    }
+    
+}
+
+
 public protocol ESClientError: Error {
     
-    func messgae() -> String
+    func message() -> String
     
 }
 
@@ -52,8 +112,13 @@ public class RequestCreationError: ESClientError {
         self.msg = msg
     }
     
-    public func messgae() -> String {
+    public func message() -> String {
         return msg
     }
     
+}
+
+public enum RequestBuilderError: Error {
+    case missingRequiredField(String)
+    case atleastOneFieldRequired([String])
 }
